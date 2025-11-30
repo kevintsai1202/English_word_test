@@ -163,93 +163,93 @@
     <script>
         // --- Data Section ---
         const WORDS_DB = [
-            { category: "Animals", word: "bird", emoji: "🐦" },
-            { category: "Animals", word: "dog", emoji: "🐶" },
-            { category: "Animals", word: "rabbit", emoji: "🐰" },
-            { category: "Animals", word: "cat", emoji: "🐱" },
-            { category: "Animals", word: "fish", emoji: "🐟" },
-            { category: "Animals", word: "cow", emoji: "🐮" },
-            { category: "Animals", word: "duck", emoji: "🦆" },
-            { category: "Animals", word: "pig", emoji: "🐷" },
-            { category: "Animals", word: "horse", emoji: "🐴" },
-            { category: "Animals", word: "chicken", emoji: "🐔" },
-            { category: "Animals", word: "lion", emoji: "🦁" },
-            { category: "Animals", word: "tiger", emoji: "🐯" },
-            { category: "Animals", word: "elephant", emoji: "🐘" },
-            { category: "Animals", word: "zebra", emoji: "🦓" },
-            { category: "Animals", word: "bear", emoji: "🐻" },
-            { category: "Body Parts", word: "hair", emoji: "💇" },
-            { category: "Body Parts", word: "nose", emoji: "👃" },
-            { category: "Body Parts", word: "ears", emoji: "👂" },
-            { category: "Body Parts", word: "eyes", emoji: "👀" },
-            { category: "Body Parts", word: "mouth", emoji: "👄" },
-            { category: "Body Parts", word: "eyebrows", emoji: "🤨" },
-            { category: "Body Parts", word: "head", emoji: "🗣️" },
-            { category: "Body Parts", word: "eye", emoji: "👁️" },
-            { category: "Body Parts", word: "face", emoji: "🌝" },
-            { category: "Colors", word: "green", emoji: "🟢" },
-            { category: "Colors", word: "orange", emoji: "🟠" },
-            { category: "Colors", word: "purple", emoji: "🟣" },
-            { category: "Colors", word: "pink", emoji: "🌸" },
-            { category: "Colors", word: "gray", emoji: "🌫️" },
-            { category: "Colors", word: "red", emoji: "🔴" },
-            { category: "Colors", word: "blue", emoji: "🔵" },
-            { category: "Colors", word: "black", emoji: "⚫" },
-            { category: "Colors", word: "yellow", emoji: "🟡" },
-            { category: "Colors", word: "white", emoji: "⚪" },
-            { category: "Family", word: "father", emoji: "👨" },
-            { category: "Family", word: "mother", emoji: "👩" },
-            { category: "Family", word: "grandpa", emoji: "👴" },
-            { category: "Family", word: "grandma", emoji: "👵" },
-            { category: "Family", word: "sister", emoji: "👧" },
-            { category: "Family", word: "brother", emoji: "👦" },
-            { category: "Emotions and Feelings", word: "happy", emoji: "😄" },
-            { category: "Emotions and Feelings", word: "sad", emoji: "😢" },
-            { category: "Emotions and Feelings", word: "sick", emoji: "🤢" },
-            { category: "Emotions and Feelings", word: "angry", emoji: "😠" },
-            { category: "Emotions and Feelings", word: "tired", emoji: "😴" },
-            { category: "Emotions and Feelings", word: "hungry", emoji: "🤤" },
-            { category: "Numbers", word: "one", emoji: "1️⃣" },
-            { category: "Numbers", word: "two", emoji: "2️⃣" },
-            { category: "Numbers", word: "three", emoji: "3️⃣" },
-            { category: "Numbers", word: "four", emoji: "4️⃣" },
-            { category: "Numbers", word: "five", emoji: "5️⃣" },
-            { category: "Numbers", word: "six", emoji: "6️⃣" },
-            { category: "Numbers", word: "seven", emoji: "7️⃣" },
-            { category: "Numbers", word: "eight", emoji: "8️⃣" },
-            { category: "Numbers", word: "nine", emoji: "9️⃣" },
-            { category: "Numbers", word: "ten", emoji: "🔟" },
-            { category: "Numbers", word: "eleven", emoji: "11" },
-            { category: "Numbers", word: "twelve", emoji: "12" },
-            { category: "Occupations", word: "doctor", emoji: "👨‍⚕️" },
-            { category: "Occupations", word: "nurse", emoji: "👩‍⚕️" },
-            { category: "Occupations", word: "cook", emoji: "👨‍🍳" },
-            { category: "Occupations", word: "teacher", emoji: "👩‍🏫" },
-            { category: "Occupations", word: "student", emoji: "🎒" },
-            { category: "Personal Characteristics", word: "heavy", emoji: "🏋️" },
-            { category: "Personal Characteristics", word: "short", emoji: "📏" },
-            { category: "Personal Characteristics", word: "thin", emoji: "🧣" },
-            { category: "Personal Characteristics", word: "tall", emoji: "🦒" },
-            { category: "Personal Characteristics", word: "strong", emoji: "💪" },
-            { category: "Personal Characteristics", word: "fat", emoji: "🐖" },
-            { category: "School Supplies", word: "pen", emoji: "🖊️" },
-            { category: "School Supplies", word: "pencil", emoji: "✏️" },
-            { category: "School Supplies", word: "eraser", emoji: "🧼" },
-            { category: "School Supplies", word: "ruler", emoji: "📏" },
-            { category: "School Supplies", word: "marker", emoji: "🖍️" },
-            { category: "School Supplies", word: "pencil case", emoji: "👝" },
-            { category: "School Supplies", word: "book", emoji: "📖" },
-            { category: "Toys", word: "robot", emoji: "🤖" },
-            { category: "Toys", word: "doll", emoji: "🎎" },
-            { category: "Toys", word: "yo-yo", emoji: "🪀" },
-            { category: "Toys", word: "ball", emoji: "⚽" },
-            { category: "Toys", word: "top", emoji: "🌪️" },
-            { category: "Toys", word: "kite", emoji: "🪁" },
-            { category: "Actions", word: "dance", emoji: "💃" },
-            { category: "Actions", word: "draw", emoji: "🎨" },
-            { category: "Actions", word: "swim", emoji: "🏊" },
-            { category: "Actions", word: "sing", emoji: "🎤" },
-            { category: "Actions", word: "ride a bike", emoji: "🚴" }
+            { category: "Animals", word: "bird", emoji: "🐦", meaning: "小鳥" },
+            { category: "Animals", word: "dog", emoji: "🐶", meaning: "狗狗" },
+            { category: "Animals", word: "rabbit", emoji: "🐰", meaning: "兔子" },
+            { category: "Animals", word: "cat", emoji: "🐱", meaning: "貓咪" },
+            { category: "Animals", word: "fish", emoji: "🐟", meaning: "魚" },
+            { category: "Animals", word: "cow", emoji: "🐮", meaning: "乳牛" },
+            { category: "Animals", word: "duck", emoji: "🦆", meaning: "鴨子" },
+            { category: "Animals", word: "pig", emoji: "🐷", meaning: "小豬" },
+            { category: "Animals", word: "horse", emoji: "🐴", meaning: "馬" },
+            { category: "Animals", word: "chicken", emoji: "🐔", meaning: "雞" },
+            { category: "Animals", word: "lion", emoji: "🦁", meaning: "獅子" },
+            { category: "Animals", word: "tiger", emoji: "🐯", meaning: "老虎" },
+            { category: "Animals", word: "elephant", emoji: "🐘", meaning: "大象" },
+            { category: "Animals", word: "zebra", emoji: "🦓", meaning: "斑馬" },
+            { category: "Animals", word: "bear", emoji: "🐻", meaning: "熊" },
+            { category: "Body Parts", word: "hair", emoji: "💇", meaning: "頭髮" },
+            { category: "Body Parts", word: "nose", emoji: "👃", meaning: "鼻子" },
+            { category: "Body Parts", word: "ears", emoji: "👂", meaning: "耳朵" },
+            { category: "Body Parts", word: "eyes", emoji: "👀", meaning: "眼睛" },
+            { category: "Body Parts", word: "mouth", emoji: "👄", meaning: "嘴巴" },
+            { category: "Body Parts", word: "eyebrows", emoji: "🤨", meaning: "眉毛" },
+            { category: "Body Parts", word: "head", emoji: "🗣️", meaning: "頭" },
+            { category: "Body Parts", word: "eye", emoji: "👁️", meaning: "眼睛" },
+            { category: "Body Parts", word: "face", emoji: "🌝", meaning: "臉" },
+            { category: "Colors", word: "green", emoji: "🟢", meaning: "綠色" },
+            { category: "Colors", word: "orange", emoji: "🟠", meaning: "橘色" },
+            { category: "Colors", word: "purple", emoji: "🟣", meaning: "紫色" },
+            { category: "Colors", word: "pink", emoji: "🌸", meaning: "粉紅色" },
+            { category: "Colors", word: "gray", emoji: "🌫️", meaning: "灰色" },
+            { category: "Colors", word: "red", emoji: "🔴", meaning: "紅色" },
+            { category: "Colors", word: "blue", emoji: "🔵", meaning: "藍色" },
+            { category: "Colors", word: "black", emoji: "⚫", meaning: "黑色" },
+            { category: "Colors", word: "yellow", emoji: "🟡", meaning: "黃色" },
+            { category: "Colors", word: "white", emoji: "⚪", meaning: "白色" },
+            { category: "Family", word: "father", emoji: "👨", meaning: "爸爸" },
+            { category: "Family", word: "mother", emoji: "👩", meaning: "媽媽" },
+            { category: "Family", word: "grandpa", emoji: "👴", meaning: "爺爺" },
+            { category: "Family", word: "grandma", emoji: "👵", meaning: "奶奶" },
+            { category: "Family", word: "sister", emoji: "👧", meaning: "姐妹" },
+            { category: "Family", word: "brother", emoji: "👦", meaning: "兄弟" },
+            { category: "Emotions and Feelings", word: "happy", emoji: "😄", meaning: "快樂" },
+            { category: "Emotions and Feelings", word: "sad", emoji: "😢", meaning: "難過" },
+            { category: "Emotions and Feelings", word: "sick", emoji: "🤢", meaning: "生病" },
+            { category: "Emotions and Feelings", word: "angry", emoji: "😠", meaning: "生氣" },
+            { category: "Emotions and Feelings", word: "tired", emoji: "😴", meaning: "累" },
+            { category: "Emotions and Feelings", word: "hungry", emoji: "🤤", meaning: "餓" },
+            { category: "Numbers", word: "one", emoji: "1️⃣", meaning: "一" },
+            { category: "Numbers", word: "two", emoji: "2️⃣", meaning: "二" },
+            { category: "Numbers", word: "three", emoji: "3️⃣", meaning: "三" },
+            { category: "Numbers", word: "four", emoji: "4️⃣", meaning: "四" },
+            { category: "Numbers", word: "five", emoji: "5️⃣", meaning: "五" },
+            { category: "Numbers", word: "six", emoji: "6️⃣", meaning: "六" },
+            { category: "Numbers", word: "seven", emoji: "7️⃣", meaning: "七" },
+            { category: "Numbers", word: "eight", emoji: "8️⃣", meaning: "八" },
+            { category: "Numbers", word: "nine", emoji: "9️⃣", meaning: "九" },
+            { category: "Numbers", word: "ten", emoji: "🔟", meaning: "十" },
+            { category: "Numbers", word: "eleven", emoji: "11", meaning: "十一" },
+            { category: "Numbers", word: "twelve", emoji: "12", meaning: "十二" },
+            { category: "Occupations", word: "doctor", emoji: "👨‍⚕️", meaning: "醫生" },
+            { category: "Occupations", word: "nurse", emoji: "👩‍⚕️", meaning: "護士" },
+            { category: "Occupations", word: "cook", emoji: "👨‍🍳", meaning: "廚師" },
+            { category: "Occupations", word: "teacher", emoji: "👩‍🏫", meaning: "老師" },
+            { category: "Occupations", word: "student", emoji: "🎒", meaning: "學生" },
+            { category: "Personal Characteristics", word: "heavy", emoji: "🏋️", meaning: "重" },
+            { category: "Personal Characteristics", word: "short", emoji: "📏", meaning: "矮/短" },
+            { category: "Personal Characteristics", word: "thin", emoji: "🧣", meaning: "瘦" },
+            { category: "Personal Characteristics", word: "tall", emoji: "🦒", meaning: "高" },
+            { category: "Personal Characteristics", word: "strong", emoji: "💪", meaning: "強壯" },
+            { category: "Personal Characteristics", word: "fat", emoji: "🐖", meaning: "胖" },
+            { category: "School Supplies", word: "pen", emoji: "🖊️", meaning: "原子筆" },
+            { category: "School Supplies", word: "pencil", emoji: "✏️", meaning: "鉛筆" },
+            { category: "School Supplies", word: "eraser", emoji: "🧼", meaning: "橡皮擦" },
+            { category: "School Supplies", word: "ruler", emoji: "📏", meaning: "尺" },
+            { category: "School Supplies", word: "marker", emoji: "🖍️", meaning: "麥克筆" },
+            { category: "School Supplies", word: "pencil case", emoji: "👝", meaning: "鉛筆盒" },
+            { category: "School Supplies", word: "book", emoji: "📖", meaning: "書" },
+            { category: "Toys", word: "robot", emoji: "🤖", meaning: "機器人" },
+            { category: "Toys", word: "doll", emoji: "🎎", meaning: "洋娃娃" },
+            { category: "Toys", word: "yo-yo", emoji: "🪀", meaning: "溜溜球" },
+            { category: "Toys", word: "ball", emoji: "⚽", meaning: "球" },
+            { category: "Toys", word: "top", emoji: "🌪️", meaning: "陀螺" },
+            { category: "Toys", word: "kite", emoji: "🪁", meaning: "風箏" },
+            { category: "Actions", word: "dance", emoji: "💃", meaning: "跳舞" },
+            { category: "Actions", word: "draw", emoji: "🎨", meaning: "畫畫" },
+            { category: "Actions", word: "swim", emoji: "🏊", meaning: "游泳" },
+            { category: "Actions", word: "sing", emoji: "🎤", meaning: "唱歌" },
+            { category: "Actions", word: "ride a bike", emoji: "🚴", meaning: "騎腳踏車" }
         ];
 
         // --- Logic Section ---
@@ -310,6 +310,16 @@
                 const utterThis = new SpeechSynthesisUtterance(text);
                 utterThis.lang = 'en-US';
                 utterThis.rate = 0.8; // Slower for kids
+                this.synth.speak(utterThis);
+            }
+
+            speakChinese(text) {
+                if (this.synth.speaking) {
+                    this.synth.cancel();
+                }
+                const utterThis = new SpeechSynthesisUtterance(text);
+                utterThis.lang = 'zh-TW';
+                utterThis.rate = 1.0;
                 this.synth.speak(utterThis);
             }
 
@@ -510,10 +520,17 @@
                 container.className = 'w-full max-w-md text-center';
                 
                 const playBtn = document.createElement('button');
-                playBtn.className = 'bg-blue-400 text-white w-24 h-24 rounded-full text-4xl shadow-lg mb-8 hover:bg-blue-500 animate-bounce-custom';
+                playBtn.className = 'bg-blue-400 text-white w-24 h-24 rounded-full text-4xl shadow-lg mb-4 hover:bg-blue-500 animate-bounce-custom';
                 playBtn.innerHTML = '🔊';
                 playBtn.onclick = () => this.audio.speak(targetWord.word);
                 container.appendChild(playBtn);
+
+                // Hint Button (Chinese)
+                const hintBtn = document.createElement('button');
+                hintBtn.className = 'block mx-auto mb-8 bg-yellow-100 text-yellow-600 px-4 py-2 rounded-full text-sm font-bold shadow hover:bg-yellow-200';
+                hintBtn.innerHTML = '💡 中文提示';
+                hintBtn.onclick = () => this.audio.speakChinese(targetWord.meaning);
+                container.appendChild(hintBtn);
 
                 const grid = document.createElement('div');
                 grid.className = 'grid grid-cols-2 gap-4';
@@ -547,10 +564,19 @@
 
                 // Play sound btn small
                 const soundBtn = document.createElement('button');
-                soundBtn.className = 'mb-8 text-blue-500 font-bold bg-white px-3 py-1 rounded-full shadow';
+                soundBtn.className = 'mb-2 text-blue-500 font-bold bg-white px-3 py-1 rounded-full shadow mr-2';
                 soundBtn.innerText = '🔊 聽發音';
                 soundBtn.onclick = () => this.audio.speak(targetWord.word);
-                container.appendChild(soundBtn);
+                
+                const hintBtn = document.createElement('button');
+                hintBtn.className = 'mb-8 text-yellow-600 font-bold bg-yellow-100 px-3 py-1 rounded-full shadow';
+                hintBtn.innerText = '💡 中文';
+                hintBtn.onclick = () => this.audio.speakChinese(targetWord.meaning);
+                
+                const btnContainer = document.createElement('div');
+                btnContainer.appendChild(soundBtn);
+                btnContainer.appendChild(hintBtn);
+                container.appendChild(btnContainer);
 
                 // Slots
                 const letters = targetWord.word.split('');
@@ -611,9 +637,16 @@
                  container.className = 'w-full max-w-md text-center';
 
                  const wordCard = document.createElement('div');
-                 wordCard.className = 'bg-white p-8 rounded-3xl shadow-lg mb-8 inline-block border-4 border-green-200';
+                 wordCard.className = 'bg-white p-8 rounded-3xl shadow-lg mb-4 inline-block border-4 border-green-200';
                  wordCard.innerHTML = `<div class="text-4xl font-bold text-gray-700">${targetWord.word}</div>`;
                  container.appendChild(wordCard);
+
+                 // Hint Button
+                 const hintBtn = document.createElement('button');
+                 hintBtn.className = 'block mx-auto mb-8 bg-yellow-100 text-yellow-600 px-4 py-2 rounded-full text-sm font-bold shadow hover:bg-yellow-200';
+                 hintBtn.innerHTML = '💡 中文提示';
+                 hintBtn.onclick = () => this.audio.speakChinese(targetWord.meaning);
+                 container.appendChild(hintBtn);
 
                  // Options
                  const distractors = this.db.getRandomWords(3).filter(w => w.word !== targetWord.word);
