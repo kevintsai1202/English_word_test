@@ -117,6 +117,14 @@
                             <p class="text-sm text-green-600">幫單字找朋友</p>
                         </div>
                     </button>
+
+                    <button onclick="app.startLearning()" class="card-hover bg-blue-100 p-4 rounded-2xl flex items-center shadow-md border-b-4 border-blue-200">
+                        <span class="text-3xl mr-4">📖</span>
+                        <div class="text-left">
+                            <h3 class="font-bold text-xl text-blue-800">單字小書</h3>
+                            <p class="text-sm text-blue-600">一起來學新單字</p>
+                        </div>
+                    </button>
                 </div>
             </div>
 
@@ -144,6 +152,25 @@
                     <h2 id="feedback-text" class="text-3xl font-bold mb-6 text-green-500">答對了！</h2>
                     <button id="next-btn" class="bg-blue-500 text-white px-8 py-3 rounded-full font-bold text-xl hover:bg-blue-600 shadow-lg">下一題 ➡️</button>
                 </div>
+            </div>
+        </div>
+
+        <!-- Learning View -->
+        <div id="learning-view" class="view hidden flex-col w-full h-full pt-4">
+            <div class="flex justify-between items-center mb-4 px-4">
+                <button onclick="app.showLobby()" class="bg-white p-2 rounded-full shadow text-xl hover:bg-gray-50">🏠</button>
+                <h2 class="text-2xl font-bold text-blue-600">單字小書</h2>
+                <div class="w-10"></div> <!-- Spacer -->
+            </div>
+
+            <!-- Category Filter -->
+            <div id="learning-categories" class="flex overflow-x-auto space-x-2 pb-4 px-4 mb-2 scrollbar-hide">
+                <!-- Categories injected here -->
+            </div>
+
+            <!-- Word Grid -->
+            <div id="learning-content" class="flex-1 overflow-y-auto p-4 grid grid-cols-2 sm:grid-cols-3 gap-4 content-start">
+                <!-- Words injected here -->
             </div>
         </div>
 
@@ -366,7 +393,8 @@
                 this.views = {
                     lobby: document.getElementById('lobby-view'),
                     game: document.getElementById('game-view'),
-                    reward: document.getElementById('reward-view')
+                    reward: document.getElementById('reward-view'),
+                    learning: document.getElementById('learning-view')
                 };
                 this.gameContent = document.getElementById('game-content');
                 this.scoreDisplay = document.getElementById('score-display');
@@ -377,6 +405,10 @@
                 this.feedbackText = document.getElementById('feedback-text');
                 this.nextBtn = document.getElementById('next-btn');
                 this.stickerGrid = document.getElementById('sticker-grid');
+                
+                // Learning View Elements
+                this.learningCategories = document.getElementById('learning-categories');
+                this.learningContent = document.getElementById('learning-content');
             }
 
             switchView(viewName) {
@@ -468,6 +500,62 @@
                 this.ui.renderStickers(this.db.progress.stickers);
                 this.ui.switchView('reward');
                 this.audio.playSound('click');
+            }
+
+            // --- Learning Mode ---
+            startLearning() {
+                this.ui.switchView('learning');
+                this.audio.playSound('click');
+                
+                const categories = this.db.getAllCategories();
+                this.renderLearningCategories(categories);
+                // Default to first category
+                if (categories.length > 0) {
+                    this.renderLearningContent(categories[0]);
+                }
+            }
+
+            renderLearningCategories(categories) {
+                this.ui.learningCategories.innerHTML = '';
+                categories.forEach((cat, index) => {
+                    const btn = document.createElement('button');
+                    btn.className = `whitespace-nowrap px-4 py-2 rounded-full text-sm font-bold shadow transition-colors mr-2 mb-2 ${index === 0 ? 'bg-blue-500 text-white' : 'bg-white text-blue-500 hover:bg-blue-50'}`;
+                    btn.innerText = cat;
+                    btn.onclick = () => {
+                        // Update active state
+                        Array.from(this.ui.learningCategories.children).forEach(c => {
+                            c.className = 'whitespace-nowrap px-4 py-2 rounded-full text-sm font-bold shadow transition-colors mr-2 mb-2 bg-white text-blue-500 hover:bg-blue-50';
+                        });
+                        btn.className = 'whitespace-nowrap px-4 py-2 rounded-full text-sm font-bold shadow transition-colors mr-2 mb-2 bg-blue-500 text-white';
+                        
+                        this.renderLearningContent(cat);
+                        this.audio.playSound('click');
+                    };
+                    this.ui.learningCategories.appendChild(btn);
+                });
+            }
+
+            renderLearningContent(category) {
+                const words = WORDS_DB.filter(w => w.category === category);
+                this.ui.learningContent.innerHTML = '';
+                
+                words.forEach(item => {
+                    const card = document.createElement('div');
+                    card.className = 'bg-white p-4 rounded-3xl shadow-md flex flex-col items-center justify-between border-2 border-gray-100 hover:border-blue-200 transition-all h-48';
+                    card.innerHTML = `
+                        <div class="text-5xl mb-2">${item.emoji}</div>
+                        <div class="text-xl font-bold text-gray-700 mb-1">${item.word}</div>
+                        <div class="flex space-x-2 w-full mt-auto">
+                            <button class="flex-1 bg-blue-100 text-blue-600 rounded-xl py-2 hover:bg-blue-200 transition-colors" onclick="app.audio.speak('${item.word}')">
+                                🔊
+                            </button>
+                            <button class="flex-1 bg-yellow-100 text-yellow-600 rounded-xl py-2 hover:bg-yellow-200 transition-colors" onclick="app.audio.speakChinese('${item.meaning}')">
+                                📖
+                            </button>
+                        </div>
+                    `;
+                    this.ui.learningContent.appendChild(card);
+                });
             }
 
             startGame(type) {
