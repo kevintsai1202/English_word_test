@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>快樂英語冒險島</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'baby-blue': '#E0F2FE',
+                        'baby-green': '#DCFCE7',
+                        'baby-yellow': '#FEF3C7',
+                        'baby-pink': '#FCE7F3',
+                        'soft-text': '#4B5563',
+                    },
+                    fontFamily: {
+                        'sans': ['"Microsoft JhengHei"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #E0F2FE; /* baby-blue */
+            font-family: "Microsoft JhengHei", sans-serif;
+            overflow-x: hidden;
+            touch-action: manipulation; /* Prevent double-tap zoom on mobile */
+        }
+        .card-hover {
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .card-hover:active {
+            transform: scale(0.95);
+        }
+        .game-container {
+            max-width: 800px;
+            margin: 0 auto;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+        .hidden {
+            display: none !important;
+        }
+        /* Custom Scrollbar for Collection */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #888; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555; 
+        }
+        .animate-bounce-custom {
+            animation: bounce 2s infinite;
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(-5%); }
+            50% { transform: translateY(0); }
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body class="text-soft-text select-none">
+
+    <div id="app" class="game-container relative">
+        <!-- Lobby View -->
+        <div id="lobby-view" class="view flex flex-col items-center w-full max-w-md mx-auto pt-10">
+            <header class="text-center mb-8 animate-bounce-custom">
+                <div class="text-6xl mb-4">☁️</div>
+                <h1 class="text-3xl font-bold text-blue-500 tracking-wider">雲朵寶寶的<br>英語大冒險</h1>
+            </header>
+            
+            <div class="bg-white/80 backdrop-blur-sm p-6 rounded-3xl shadow-xl w-full mb-8 border-4 border-white">
+                <div class="text-center mb-6">
+                    <p class="text-lg text-gray-600">你好！我是雲朵寶寶。<br>想玩什麼遊戲呢？</p>
+                </div>
+                
+                <div class="grid grid-cols-1 gap-4">
+                    <button onclick="app.startGame('listening')" class="card-hover bg-baby-yellow p-4 rounded-2xl flex items-center shadow-md border-b-4 border-yellow-200">
+                        <span class="text-3xl mr-4">👂</span>
+                        <div class="text-left">
+                            <h3 class="font-bold text-xl text-yellow-800">聽音辨識</h3>
+                            <p class="text-sm text-yellow-600">聽看看是什麼字？</p>
+                        </div>
+                    </button>
+
+                    <button onclick="app.startGame('spelling')" class="card-hover bg-baby-pink p-4 rounded-2xl flex items-center shadow-md border-b-4 border-pink-200">
+                        <span class="text-3xl mr-4">🔤</span>
+                        <div class="text-left">
+                            <h3 class="font-bold text-xl text-pink-800">拼字遊戲</h3>
+                            <p class="text-sm text-pink-600">把字母排好！</p>
+                        </div>
+                    </button>
+
+                    <button onclick="app.startGame('matching')" class="card-hover bg-baby-green p-4 rounded-2xl flex items-center shadow-md border-b-4 border-green-200">
+                        <span class="text-3xl mr-4">🧩</span>
+                        <div class="text-left">
+                            <h3 class="font-bold text-xl text-green-800">連連看</h3>
+                            <p class="text-sm text-green-600">幫單字找朋友</p>
+                        </div>
+                    </button>
+                </div>
+            </div>
+
+            <button onclick="app.showRewards()" class="card-hover bg-white px-6 py-3 rounded-full shadow-lg text-blue-500 font-bold flex items-center border-2 border-blue-100">
+                <span class="mr-2">📒</span> 我的貼紙簿
+            </button>
+        </div>
+
+        <!-- Game View -->
+        <div id="game-view" class="view hidden flex-col w-full h-full">
+            <div class="flex justify-between items-center mb-6 bg-white/60 p-3 rounded-full">
+                <button onclick="app.showLobby()" class="bg-white p-2 rounded-full shadow text-xl hover:bg-gray-50">🏠</button>
+                <div class="font-bold text-xl text-blue-600">分數: <span id="score-display">0</span></div>
+                <div class="font-bold text-xl text-purple-600">題號: <span id="question-counter">1/5</span></div>
+            </div>
+
+            <div id="game-content" class="flex-1 flex flex-col items-center justify-center">
+                <!-- Dynamic Game Content -->
+            </div>
+            
+            <!-- Feedback Overlay -->
+            <div id="feedback-overlay" class="hidden absolute inset-0 bg-black/20 backdrop-blur-sm flex items-center justify-center z-50">
+                <div id="feedback-card" class="bg-white p-8 rounded-3xl shadow-2xl text-center transform scale-0 transition-transform duration-300">
+                    <div id="feedback-icon" class="text-8xl mb-4">🌟</div>
+                    <h2 id="feedback-text" class="text-3xl font-bold mb-6 text-green-500">答對了！</h2>
+                    <button id="next-btn" class="bg-blue-500 text-white px-8 py-3 rounded-full font-bold text-xl hover:bg-blue-600 shadow-lg">下一題 ➡️</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reward View -->
+        <div id="reward-view" class="view hidden w-full pt-10">
+            <div class="bg-white/90 rounded-3xl shadow-xl p-6 min-h-[80vh] border-4 border-white relative">
+                <button onclick="app.showLobby()" class="absolute top-4 right-4 text-3xl hover:scale-110 transition-transform">✖️</button>
+                <h2 class="text-3xl font-bold text-center text-blue-500 mb-8">我的貼紙簿</h2>
+                
+                <div id="sticker-grid" class="grid grid-cols-3 gap-4">
+                    <!-- Stickers injected here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- Data Section ---
+        const WORDS_DB = [
+            { category: "Animals", word: "bird", emoji: "🐦" },
+            { category: "Animals", word: "dog", emoji: "🐶" },
+            { category: "Animals", word: "rabbit", emoji: "🐰" },
+            { category: "Animals", word: "cat", emoji: "🐱" },
+            { category: "Animals", word: "fish", emoji: "🐟" },
+            { category: "Animals", word: "cow", emoji: "🐮" },
+            { category: "Animals", word: "duck", emoji: "🦆" },
+            { category: "Animals", word: "pig", emoji: "🐷" },
+            { category: "Animals", word: "horse", emoji: "🐴" },
+            { category: "Animals", word: "chicken", emoji: "🐔" },
+            { category: "Animals", word: "lion", emoji: "🦁" },
+            { category: "Animals", word: "tiger", emoji: "🐯" },
+            { category: "Animals", word: "elephant", emoji: "🐘" },
+            { category: "Animals", word: "zebra", emoji: "🦓" },
+            { category: "Animals", word: "bear", emoji: "🐻" },
+            { category: "Body Parts", word: "hair", emoji: "💇" },
+            { category: "Body Parts", word: "nose", emoji: "👃" },
+            { category: "Body Parts", word: "ears", emoji: "👂" },
+            { category: "Body Parts", word: "eyes", emoji: "👀" },
+            { category: "Body Parts", word: "mouth", emoji: "👄" },
+            { category: "Body Parts", word: "eyebrows", emoji: "🤨" },
+            { category: "Body Parts", word: "head", emoji: "🗣️" },
+            { category: "Body Parts", word: "eye", emoji: "👁️" },
+            { category: "Body Parts", word: "face", emoji: "🌝" },
+            { category: "Colors", word: "green", emoji: "🟢" },
+            { category: "Colors", word: "orange", emoji: "🟠" },
+            { category: "Colors", word: "purple", emoji: "🟣" },
+            { category: "Colors", word: "pink", emoji: "🌸" },
+            { category: "Colors", word: "gray", emoji: "🌫️" },
+            { category: "Colors", word: "red", emoji: "🔴" },
+            { category: "Colors", word: "blue", emoji: "🔵" },
+            { category: "Colors", word: "black", emoji: "⚫" },
+            { category: "Colors", word: "yellow", emoji: "🟡" },
+            { category: "Colors", word: "white", emoji: "⚪" },
+            { category: "Family", word: "father", emoji: "👨" },
+            { category: "Family", word: "mother", emoji: "👩" },
+            { category: "Family", word: "grandpa", emoji: "👴" },
+            { category: "Family", word: "grandma", emoji: "👵" },
+            { category: "Family", word: "sister", emoji: "👧" },
+            { category: "Family", word: "brother", emoji: "👦" },
+            { category: "Emotions and Feelings", word: "happy", emoji: "😄" },
+            { category: "Emotions and Feelings", word: "sad", emoji: "😢" },
+            { category: "Emotions and Feelings", word: "sick", emoji: "🤢" },
+            { category: "Emotions and Feelings", word: "angry", emoji: "😠" },
+            { category: "Emotions and Feelings", word: "tired", emoji: "😴" },
+            { category: "Emotions and Feelings", word: "hungry", emoji: "🤤" },
+            { category: "Numbers", word: "one", emoji: "1️⃣" },
+            { category: "Numbers", word: "two", emoji: "2️⃣" },
+            { category: "Numbers", word: "three", emoji: "3️⃣" },
+            { category: "Numbers", word: "four", emoji: "4️⃣" },
+            { category: "Numbers", word: "five", emoji: "5️⃣" },
+            { category: "Numbers", word: "six", emoji: "6️⃣" },
+            { category: "Numbers", word: "seven", emoji: "7️⃣" },
+            { category: "Numbers", word: "eight", emoji: "8️⃣" },
+            { category: "Numbers", word: "nine", emoji: "9️⃣" },
+            { category: "Numbers", word: "ten", emoji: "🔟" },
+            { category: "Numbers", word: "eleven", emoji: "11" },
+            { category: "Numbers", word: "twelve", emoji: "12" },
+            { category: "Occupations", word: "doctor", emoji: "👨‍⚕️" },
+            { category: "Occupations", word: "nurse", emoji: "👩‍⚕️" },
+            { category: "Occupations", word: "cook", emoji: "👨‍🍳" },
+            { category: "Occupations", word: "teacher", emoji: "👩‍🏫" },
+            { category: "Occupations", word: "student", emoji: "🎒" },
+            { category: "Personal Characteristics", word: "heavy", emoji: "🏋️" },
+            { category: "Personal Characteristics", word: "short", emoji: "📏" },
+            { category: "Personal Characteristics", word: "thin", emoji: "🧣" },
+            { category: "Personal Characteristics", word: "tall", emoji: "🦒" },
+            { category: "Personal Characteristics", word: "strong", emoji: "💪" },
+            { category: "Personal Characteristics", word: "fat", emoji: "🐖" },
+            { category: "School Supplies", word: "pen", emoji: "🖊️" },
+            { category: "School Supplies", word: "pencil", emoji: "✏️" },
+            { category: "School Supplies", word: "eraser", emoji: "🧼" },
+            { category: "School Supplies", word: "ruler", emoji: "📏" },
+            { category: "School Supplies", word: "marker", emoji: "🖍️" },
+            { category: "School Supplies", word: "pencil case", emoji: "👝" },
+            { category: "School Supplies", word: "book", emoji: "📖" },
+            { category: "Toys", word: "robot", emoji: "🤖" },
+            { category: "Toys", word: "doll", emoji: "🎎" },
+            { category: "Toys", word: "yo-yo", emoji: "🪀" },
+            { category: "Toys", word: "ball", emoji: "⚽" },
+            { category: "Toys", word: "top", emoji: "🌪️" },
+            { category: "Toys", word: "kite", emoji: "🪁" },
+            { category: "Actions", word: "dance", emoji: "💃" },
+            { category: "Actions", word: "draw", emoji: "🎨" },
+            { category: "Actions", word: "swim", emoji: "🏊" },
+            { category: "Actions", word: "sing", emoji: "🎤" },
+            { category: "Actions", word: "ride a bike", emoji: "🚴" }
+        ];
+
+        // --- Logic Section ---
+
+        class DataManager {
+            constructor() {
+                this.storageKey = 'english_app_progress_v1';
+                this.progress = this.loadProgress();
+            }
+
+            loadProgress() {
+                const stored = localStorage.getItem(this.storageKey);
+                return stored ? JSON.parse(stored) : { stickers: [] };
+            }
+
+            saveProgress() {
+                localStorage.setItem(this.storageKey, JSON.stringify(this.progress));
+            }
+
+            unlockSticker(stickerId) {
+                if (!this.progress.stickers.includes(stickerId)) {
+                    this.progress.stickers.push(stickerId);
+                    this.saveProgress();
+                    return true; // New sticker!
+                }
+                return false; // Already had it
+            }
+
+            getRandomWords(count, category = null) {
+                let pool = WORDS_DB;
+                if (category) {
+                    pool = pool.filter(w => w.category === category);
+                }
+                // Fisher-Yates shuffle copy
+                const shuffled = [...pool];
+                for (let i = shuffled.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+                }
+                return shuffled.slice(0, count);
+            }
+            
+            getAllCategories() {
+                return [...new Set(WORDS_DB.map(w => w.category))];
+            }
+        }
+
+        class AudioManager {
+            constructor() {
+                this.synth = window.speechSynthesis;
+                this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+
+            speak(text) {
+                if (this.synth.speaking) {
+                    this.synth.cancel();
+                }
+                const utterThis = new SpeechSynthesisUtterance(text);
+                utterThis.lang = 'en-US';
+                utterThis.rate = 0.8; // Slower for kids
+                this.synth.speak(utterThis);
+            }
+
+            playSound(type) {
+                if (this.audioCtx.state === 'suspended') {
+                    this.audioCtx.resume();
+                }
+                const osc = this.audioCtx.createOscillator();
+                const gainNode = this.audioCtx.createGain();
+                
+                osc.connect(gainNode);
+                gainNode.connect(this.audioCtx.destination);
+
+                if (type === 'click') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(800, this.audioCtx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(300, this.audioCtx.currentTime + 0.1);
+                    gainNode.gain.setValueAtTime(0.3, this.audioCtx.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioCtx.currentTime + 0.1);
+                    osc.start();
+                    osc.stop(this.audioCtx.currentTime + 0.1);
+                } else if (type === 'success') {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(440, this.audioCtx.currentTime);
+                    osc.frequency.setValueAtTime(880, this.audioCtx.currentTime + 0.1);
+                    gainNode.gain.setValueAtTime(0.3, this.audioCtx.currentTime);
+                    gainNode.gain.linearRampToValueAtTime(0.01, this.audioCtx.currentTime + 0.5);
+                    osc.start();
+                    osc.stop(this.audioCtx.currentTime + 0.5);
+                } else if (type === 'error') {
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(150, this.audioCtx.currentTime);
+                    osc.frequency.linearRampToValueAtTime(100, this.audioCtx.currentTime + 0.2);
+                    gainNode.gain.setValueAtTime(0.3, this.audioCtx.currentTime);
+                    gainNode.gain.linearRampToValueAtTime(0.01, this.audioCtx.currentTime + 0.3);
+                    osc.start();
+                    osc.stop(this.audioCtx.currentTime + 0.3);
+                }
+            }
+        }
+
+        class UIManager {
+            constructor() {
+                this.views = {
+                    lobby: document.getElementById('lobby-view'),
+                    game: document.getElementById('game-view'),
+                    reward: document.getElementById('reward-view')
+                };
+                this.gameContent = document.getElementById('game-content');
+                this.scoreDisplay = document.getElementById('score-display');
+                this.questionCounter = document.getElementById('question-counter');
+                this.feedbackOverlay = document.getElementById('feedback-overlay');
+                this.feedbackCard = document.getElementById('feedback-card');
+                this.feedbackIcon = document.getElementById('feedback-icon');
+                this.feedbackText = document.getElementById('feedback-text');
+                this.nextBtn = document.getElementById('next-btn');
+                this.stickerGrid = document.getElementById('sticker-grid');
+            }
+
+            switchView(viewName) {
+                Object.values(this.views).forEach(el => el.classList.add('hidden'));
+                this.views[viewName].classList.remove('hidden');
+            }
+
+            updateHeader(score, current, total) {
+                this.scoreDisplay.innerText = score;
+                this.questionCounter.innerText = `${current}/${total}`;
+            }
+
+            showFeedback(isCorrect, callback) {
+                this.feedbackOverlay.classList.remove('hidden');
+                // Trigger reflow for animation
+                void this.feedbackCard.offsetWidth; 
+                this.feedbackCard.classList.remove('scale-0');
+                this.feedbackCard.classList.add('scale-100');
+
+                if (isCorrect) {
+                    this.feedbackIcon.innerText = "🌟";
+                    this.feedbackText.innerText = "答對了！";
+                    this.feedbackText.className = "text-3xl font-bold mb-6 text-green-500";
+                } else {
+                    this.feedbackIcon.innerText = "💪";
+                    this.feedbackText.innerText = "再試一次！";
+                    this.feedbackText.className = "text-3xl font-bold mb-6 text-orange-500";
+                }
+
+                this.nextBtn.onclick = () => {
+                    this.feedbackCard.classList.remove('scale-100');
+                    this.feedbackCard.classList.add('scale-0');
+                    setTimeout(() => {
+                        this.feedbackOverlay.classList.add('hidden');
+                        callback();
+                    }, 300);
+                };
+            }
+
+            renderStickers(ownedStickers) {
+                this.stickerGrid.innerHTML = '';
+                // Define some achievements/stickers
+                const achievements = [
+                    { id: 'listening_novice', icon: '👂', name: '小耳朵' },
+                    { id: 'spelling_novice', icon: '🔤', name: '拼字王' },
+                    { id: 'matching_novice', icon: '🧩', name: '配對手' },
+                    { id: 'listening_master', icon: '🎧', name: '金耳朵' },
+                    { id: 'spelling_master', icon: '📚', name: '單字通' },
+                    { id: 'matching_master', icon: '⚡', name: '快手' },
+                ];
+
+                achievements.forEach(ach => {
+                    const isOwned = ownedStickers.includes(ach.id);
+                    const div = document.createElement('div');
+                    div.className = `flex flex-col items-center p-4 rounded-2xl border-2 ${isOwned ? 'bg-white border-yellow-300 shadow-md' : 'bg-gray-100 border-gray-200 opacity-50'}`;
+                    div.innerHTML = `
+                        <div class="text-4xl mb-2 filter ${isOwned ? '' : 'grayscale'}">${ach.icon}</div>
+                        <div class="text-sm font-bold ${isOwned ? 'text-gray-800' : 'text-gray-400'}">${ach.name}</div>
+                    `;
+                    this.stickerGrid.appendChild(div);
+                });
+            }
+        }
+
+        class App {
+            constructor() {
+                this.db = new DataManager();
+                this.audio = new AudioManager();
+                this.ui = new UIManager();
+                
+                this.currentGameState = {
+                    type: null,
+                    questions: [],
+                    currentIndex: 0,
+                    score: 0
+                };
+            }
+
+            init() {
+                this.showLobby();
+            }
+
+            showLobby() {
+                this.ui.switchView('lobby');
+                this.audio.playSound('click');
+            }
+
+            showRewards() {
+                this.ui.renderStickers(this.db.progress.stickers);
+                this.ui.switchView('reward');
+                this.audio.playSound('click');
+            }
+
+            startGame(type) {
+                this.currentGameState = {
+                    type: type,
+                    questions: this.db.getRandomWords(5), // 5 questions per round
+                    currentIndex: 0,
+                    score: 0
+                };
+                this.audio.playSound('click');
+                this.ui.switchView('game');
+                this.playRound();
+            }
+
+            playRound() {
+                const state = this.currentGameState;
+                if (state.currentIndex >= state.questions.length) {
+                    this.endGame();
+                    return;
+                }
+
+                const currentWord = state.questions[state.currentIndex];
+                this.ui.updateHeader(state.score, state.currentIndex + 1, state.questions.length);
+
+                // Clear previous game content
+                this.ui.gameContent.innerHTML = '';
+
+                // Route to specific game logic
+                if (state.type === 'listening') {
+                    this.renderListeningGame(currentWord);
+                } else if (state.type === 'spelling') {
+                    this.renderSpellingGame(currentWord);
+                } else if (state.type === 'matching') {
+                    this.renderMatchingGame(currentWord);
+                }
+            }
+
+            // Game Logic: Listening
+            renderListeningGame(targetWord) {
+                // Create options (1 correct + 3 distractors)
+                const distractors = this.db.getRandomWords(3).filter(w => w.word !== targetWord.word);
+                // Ensure we have enough distractors (if DB is small, might duplicate)
+                while(distractors.length < 3) {
+                     distractors.push(this.db.getRandomWords(1)[0]);
+                }
+                
+                const options = [targetWord, ...distractors].sort(() => Math.random() - 0.5);
+
+                const container = document.createElement('div');
+                container.className = 'w-full max-w-md text-center';
+                
+                const playBtn = document.createElement('button');
+                playBtn.className = 'bg-blue-400 text-white w-24 h-24 rounded-full text-4xl shadow-lg mb-8 hover:bg-blue-500 animate-bounce-custom';
+                playBtn.innerHTML = '🔊';
+                playBtn.onclick = () => this.audio.speak(targetWord.word);
+                container.appendChild(playBtn);
+
+                const grid = document.createElement('div');
+                grid.className = 'grid grid-cols-2 gap-4';
+                
+                options.forEach(opt => {
+                    const btn = document.createElement('button');
+                    btn.className = 'bg-white p-6 rounded-2xl shadow-md text-2xl font-bold hover:bg-blue-50 border-2 border-transparent hover:border-blue-300 transition-all';
+                    // Show Emoji + Word
+                    btn.innerHTML = `<div>${opt.emoji}</div><div class="text-lg mt-2">${opt.word}</div>`;
+                    btn.onclick = () => this.checkAnswer(opt.word === targetWord.word);
+                    grid.appendChild(btn);
+                });
+                container.appendChild(grid);
+
+                this.ui.gameContent.appendChild(container);
+                
+                // Auto speak once after a short delay
+                setTimeout(() => this.audio.speak(targetWord.word), 500);
+            }
+
+            // Game Logic: Spelling
+            renderSpellingGame(targetWord) {
+                const container = document.createElement('div');
+                container.className = 'w-full max-w-md text-center';
+
+                // Target Image/Emoji
+                const img = document.createElement('div');
+                img.className = 'text-8xl mb-4 animate-pulse';
+                img.innerText = targetWord.emoji;
+                container.appendChild(img);
+
+                // Play sound btn small
+                const soundBtn = document.createElement('button');
+                soundBtn.className = 'mb-8 text-blue-500 font-bold bg-white px-3 py-1 rounded-full shadow';
+                soundBtn.innerText = '🔊 聽發音';
+                soundBtn.onclick = () => this.audio.speak(targetWord.word);
+                container.appendChild(soundBtn);
+
+                // Slots
+                const letters = targetWord.word.split('');
+                const slotsDiv = document.createElement('div');
+                slotsDiv.className = 'flex justify-center space-x-2 mb-8';
+                let filledCount = 0;
+
+                letters.forEach((_, idx) => {
+                    const slot = document.createElement('div');
+                    slot.className = 'w-10 h-12 border-b-4 border-gray-300 flex items-center justify-center text-2xl font-bold text-blue-600';
+                    slot.dataset.index = idx;
+                    slot.id = `slot-${idx}`;
+                    slotsDiv.appendChild(slot);
+                });
+                container.appendChild(slotsDiv);
+
+                // Shuffled Letters
+                const shuffled = [...letters].sort(() => Math.random() - 0.5);
+                const poolDiv = document.createElement('div');
+                poolDiv.className = 'flex flex-wrap justify-center gap-3';
+
+                shuffled.forEach((char, i) => {
+                    const btn = document.createElement('button');
+                    btn.className = 'w-12 h-12 bg-white rounded-xl shadow-md text-xl font-bold hover:bg-yellow-100 transform hover:scale-110 transition-transform';
+                    btn.innerText = char;
+                    btn.onclick = (e) => {
+                        // Find first empty slot
+                        for(let k=0; k<letters.length; k++) {
+                            const slot = document.getElementById(`slot-${k}`);
+                            if (!slot.innerText) {
+                                slot.innerText = char;
+                                e.target.classList.add('opacity-0', 'pointer-events-none'); // Hide used letter
+                                filledCount++;
+                                
+                                // Check if full
+                                if (filledCount === letters.length) {
+                                    // Validate
+                                    let userWord = '';
+                                    for(let j=0; j<letters.length; j++) {
+                                        userWord += document.getElementById(`slot-${j}`).innerText;
+                                    }
+                                    setTimeout(() => this.checkAnswer(userWord === targetWord.word), 500);
+                                }
+                                return;
+                            }
+                        }
+                    };
+                    poolDiv.appendChild(btn);
+                });
+                container.appendChild(poolDiv);
+
+                this.ui.gameContent.appendChild(container);
+            }
+
+            // Game Logic: Matching
+            renderMatchingGame(targetWord) {
+                 const container = document.createElement('div');
+                 container.className = 'w-full max-w-md text-center';
+
+                 const wordCard = document.createElement('div');
+                 wordCard.className = 'bg-white p-8 rounded-3xl shadow-lg mb-8 inline-block border-4 border-green-200';
+                 wordCard.innerHTML = `<div class="text-4xl font-bold text-gray-700">${targetWord.word}</div>`;
+                 container.appendChild(wordCard);
+
+                 // Options
+                 const distractors = this.db.getRandomWords(3).filter(w => w.word !== targetWord.word);
+                 while(distractors.length < 3) {
+                     distractors.push(this.db.getRandomWords(1)[0]);
+                 }
+                 const options = [targetWord, ...distractors].sort(() => Math.random() - 0.5);
+
+                 const grid = document.createElement('div');
+                 grid.className = 'grid grid-cols-2 gap-4';
+                 
+                 options.forEach(opt => {
+                     const btn = document.createElement('button');
+                     btn.className = 'bg-white p-6 rounded-2xl shadow-md text-5xl hover:bg-green-50 border-2 border-transparent hover:border-green-300 transition-all';
+                     btn.innerHTML = opt.emoji;
+                     btn.onclick = () => {
+                         this.audio.speak(opt.word);
+                         this.checkAnswer(opt.word === targetWord.word);
+                     };
+                     grid.appendChild(btn);
+                 });
+                 container.appendChild(grid);
+
+                 this.ui.gameContent.appendChild(container);
+            }
+
+            checkAnswer(isCorrect) {
+                if (isCorrect) {
+                    this.currentGameState.score += 20; // 100 pts total
+                    this.audio.playSound('success');
+                } else {
+                    this.audio.playSound('error');
+                }
+                
+                this.ui.showFeedback(isCorrect, () => {
+                    this.currentGameState.currentIndex++;
+                    this.playRound();
+                });
+            }
+
+            endGame() {
+                // Unlock stickers based on score
+                const perfect = this.currentGameState.score === 100;
+                let earned = false;
+                
+                if (perfect) {
+                    if (this.currentGameState.type === 'listening') earned = this.db.unlockSticker('listening_master');
+                    if (this.currentGameState.type === 'spelling') earned = this.db.unlockSticker('spelling_master');
+                    if (this.currentGameState.type === 'matching') earned = this.db.unlockSticker('matching_master');
+                } else if (this.currentGameState.score >= 60) {
+                    if (this.currentGameState.type === 'listening') earned = this.db.unlockSticker('listening_novice');
+                    if (this.currentGameState.type === 'spelling') earned = this.db.unlockSticker('spelling_novice');
+                    if (this.currentGameState.type === 'matching') earned = this.db.unlockSticker('matching_novice');
+                }
+                
+                const msg = `遊戲結束！\n得分: ${this.currentGameState.score}\n${earned ? '🎉 獲得新貼紙！' : ''}`;
+                alert(msg);
+                this.showLobby();
+            }
+        }
+
+        // --- Bootstrap ---
+        const app = new App();
+        app.init();
+
+        // --- Simple Unit Tests ---
+        class TestSuite {
+            constructor() {
+                this.db = new DataManager();
+                this.passed = 0;
+                this.failed = 0;
+            }
+
+            assert(condition, message) {
+                if (condition) {
+                    console.log(`%c[PASS] ${message}`, 'color: green');
+                    this.passed++;
+                } else {
+                    console.error(`[FAIL] ${message}`);
+                    this.failed++;
+                }
+            }
+
+            async run() {
+                console.log('--- Starting Unit Tests ---');
+                
+                // Test 1: Data Loading
+                this.assert(WORDS_DB.length > 0, 'Words DB should not be empty');
+                this.assert(this.db.getAllCategories().length > 0, 'Categories should exist');
+
+                // Test 2: Random Words
+                const randoms = this.db.getRandomWords(5);
+                this.assert(randoms.length === 5, 'Should return 5 random words');
+                this.assert(randoms[0] !== undefined, 'Random word should be defined');
+
+                // Test 3: Progress
+                const initialStickers = this.db.progress.stickers.length;
+                this.db.unlockSticker('test_sticker');
+                this.assert(this.db.progress.stickers.includes('test_sticker'), 'Sticker should be unlocked');
+                
+                // Cleanup test sticker
+                this.db.progress.stickers = this.db.progress.stickers.filter(s => s !== 'test_sticker');
+                this.db.saveProgress();
+
+                console.log(`--- Tests Completed. Pass: ${this.passed}, Fail: ${this.failed} ---`);
+            }
+        }
+
+        if (new URLSearchParams(window.location.search).has('test')) {
+            new TestSuite().run();
+        }
+
+    </script>
+</body>
+</html>
